@@ -1,9 +1,17 @@
 <script setup>
 import axios from 'axios';
-import {ref} from 'vue';
+import {reactive, ref} from 'vue';
 import Header from '../components/header.vue';
 import Grid from '../components/grid.vue';
+const sellers = reactive([]);
 
+const getSellers = async () => {
+  await axios.get('https://enigmatic-stream-54061.herokuapp.com/api/users')
+  .then((res) => {
+    sellers.value = res.data;
+  });
+}
+getSellers();
 const users = [
   {
     title: 'Boost your conversion rate',
@@ -61,18 +69,18 @@ const users = [
   },
 ]
 
-let data = async () => {
-  const response = await axios.get('http://localhost:8000/appointment');
-  return response.data;
-};
+// let data = async () => {
+//   const response = await axios.get('http://localhost:8000/appointment');
+//   return response.data;
+// };
 
-console.log(data());
+// console.log(data());
 
 </script>
 
 <template>
 <div class="w-full absolute top-0">
   <Header></Header>
-  <Grid :users="users"></Grid>
+  <Grid :sellers="sellers"></Grid>
 </div>
 </template>

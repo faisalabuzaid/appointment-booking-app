@@ -1,13 +1,12 @@
 <template>
   <div class="text-center min-h-full">
-    <main class="py-10">
-      <div class="items-cente max-w mx-auto p-4">
+    <main v-if="isReady" class="py-10">
+      <div  class="items-cente max-w mx-auto p-4">
           <div class="flex justify-center py-1">
-              <img class="h-16 w-16 rounded-full" src="https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80" alt="" />
+              <img class="h-16 w-16 rounded-full" :src="seller.value.services.service_img" alt="" />
           </div>
           <div class="py-1">
-                <h1 class="text-2xl font-bold text-gray-900">Ricardo Cooper</h1>
-                <p class="text-sm font-medium text-gray-500">Applied for <a href="#" class="text-gray-900">Front End Developer</a> on <time datetime="2020-08-25">August 25, 2020</time></p>
+                <h1 class="text-2xl font-bold text-gray-900">{{seller.value.username}}</h1>
           </div>
       </div>
 
@@ -17,17 +16,17 @@
             <div class="bg-white shadow sm:rounded-lg items-center py-1">
               <div class="px-4 py-5 sm:px-6">
                 <h2 id="applicant-information-title" class="text-lg leading-6 font-medium text-gray-900">
-                  Applicant Information
+                  Seller Information
                 </h2>
               </div>
               <div class="border-t border-gray-200 px-4 py-5 sm:px-6">
                 <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
                   <div class="sm:col-span-1">
                     <dt class="text-sm font-medium text-gray-500">
-                      Application for
+                      Services we offer
                     </dt>
                     <dd class="mt-1 text-sm text-gray-900">
-                      Backend Developer
+                      {{ seller.value.services.service_desc }}
                     </dd>
                   </div>
                   <div class="sm:col-span-1">
@@ -40,10 +39,10 @@
                   </div>
                   <div class="sm:col-span-1">
                     <dt class="text-sm font-medium text-gray-500">
-                      Salary expectation
+                      Prices Range
                     </dt>
                     <dd class="mt-1 text-sm text-gray-900">
-                      $120,000
+                      120 - 340
                     </dd>
                   </div>
                   <div class="sm:col-span-1">
@@ -66,10 +65,16 @@
                 </dl>
               </div>
               
-            <div class="m-2">
-              <button type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-gray-500">
+            <div v-if="!newAppointmentPanel" class="m-2">
+              <button @click="showNewAppointmentPanel()" type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-gray-500">
                 Book Appoinment
               </button>
+          </div>
+          <div v-if="newAppointmentPanel" class="m-2">
+              <button @click="showNewAppointmentPanel()" type="button" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-gray-500">
+                Cancel
+              </button>
+          <NewAppointment :sellerId="seller.value._id"/>
           </div>
             </div>
           </section>         
@@ -80,67 +85,41 @@
   </div>
 </template>
 
-<script>
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-  Popover,
-  PopoverButton,
-  PopoverOverlay,
-  PopoverPanel,
-  TransitionChild,
-  TransitionRoot,
-} from '@headlessui/vue'
-import {
-  ArrowNarrowLeftIcon,
-  CheckIcon,
-  HomeIcon,
-  PaperClipIcon,
-  QuestionMarkCircleIcon,
-  SearchIcon,
-  ThumbUpIcon,
-  UserIcon,
-} from '@heroicons/vue/solid'
-import { BellIcon, MenuIcon, XIcon } from '@heroicons/vue/outline'
+<script setup>
 
+import axios from 'axios';
+import { computed, reactive, ref } from 'vue';
+import NewAppointment from './NewAppointment.vue';
 
-const user = {
-  name: 'Whitney Francis',
-  email: 'whitney@example.com',
-  imageUrl:
-    'https://images.unsplash.com/photo-1517365830460-955ce3ccd263?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=256&h=256&q=80',
+const props = defineProps({
+    id: {
+        type: String,
+        default: "",
+    },
+});
+const newAppointmentPanel = ref(false);
+
+const showNewAppointmentPanel = () => {
+  newAppointmentPanel.value = ! newAppointmentPanel.value
+};
+
+const isReady = ref(false);
+const seller = reactive({});
+
+const getSeller = async () => {
+  await axios.get(`https://enigmatic-stream-54061.herokuapp.com/api/users/${props.id}`)
+  .then((res) => {
+    seller.value = res.data;
+    isReady.value = true;
+  });
 }
+getSeller();
+
+// const handleBookAppointmnt = computed(()=> {
+//   this.$router.push('/')
+// })
 
 
-
-
-export default {
-  components: {
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
-    Popover,
-    PopoverButton,
-    PopoverOverlay,
-    PopoverPanel,
-    TransitionChild,
-    TransitionRoot,
-    ArrowNarrowLeftIcon,
-    BellIcon,
-    HomeIcon,
-    MenuIcon,
-    PaperClipIcon,
-    QuestionMarkCircleIcon,
-    SearchIcon,
-    XIcon,
-  },
-  setup() {
-    return {
-      user,
-    }
-  },
-}
+  
+    
 </script>

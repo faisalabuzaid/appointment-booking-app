@@ -45,21 +45,18 @@
 <script setup>
 
 import { CheckCircleIcon, ChevronRightIcon, MailIcon } from '@heroicons/vue/solid'
-import { computed, reactive, ref } from 'vue';
-import useAppointments from './composables/useAppointments';
-import AppointmentInteface from './composables/useAppointments';
 
-const { appointments, loadAppointments} = useAppointments();
 
-const props = defineProps({
-    data: {
-        type: Promise,
-        default: [],
-    },
-});
 
-loadAppointments();
-console.log(appointments);
+// const props = defineProps({
+//     data: {
+//         type: Promise,
+//         default: [],
+//     },
+// });
+
+// loadAppointments();
+// console.log(appointments);
 
 
 

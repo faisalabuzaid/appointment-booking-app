@@ -14,23 +14,19 @@
         </p>
       </div>
       <div class="mt-12 max-w-lg mx-auto grid gap-5 lg:grid-cols-3 lg:max-w-none text-center">
-        <div v-for="user in users" :key="user.title" class="flex flex-col rounded-lg shadow-lg overflow-hidden">
+        <div v-for="user in data.value" :key="user.username" class="flex flex-col rounded-lg shadow-lg overflow-hidden">
           <div class="flex-shrink-0">
-            <img class="h-48 w-full object-cover" :src="user.imageUrl" alt="" />
+            <img class="h-48 w-full object-cover" :src="user.services.service_img" alt="" />
           </div>
           <div class="flex-1 bg-white p-6 flex flex-col justify-between">
             <div class="flex-1">
-              <p class="text-sm font-medium text-indigo-600">
-                <a :href="user.category.href" class="hover:underline">
-                  {{ user.category.name }}
-                </a>
-              </p>
-              <a :href="user.href" class="block mt-2">
+              
+              <a :href="'/seller/'+user._id" class="block mt-2">
                 <p class="text-xl font-semibold text-gray-900">
                   {{ user.title }}
                 </p>
                 <p class="mt-3 text-base text-gray-500">
-                  {{ user.description }}
+                  {{ user.services.service_desc }}
                 </p>
               </a>
             </div>
@@ -38,8 +34,8 @@
               
               <div>
                 <p class="text-sm font-medium text-gray-900">
-                  <a :href="user.author.href" class="hover:underline">
-                    {{ user.author.name }}
+                  <a :href="'/seller/'+user._id" class="hover:underline">
+                    {{ user.username }}
                   </a>
                 </p>
                
@@ -54,15 +50,10 @@
 
 <script setup>
 const props = defineProps({
-    users: {
+    sellers: {
         type: Array,
         default: [],
     },
 });
-
-const users= props.users;
-
-console.log(users);
-
-
+const data= props.sellers;
 </script>
